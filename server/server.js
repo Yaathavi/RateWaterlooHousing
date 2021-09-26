@@ -1,8 +1,10 @@
 require("dotenv").config();
 const express = require("express"); // import express app
+const cors = require("cors");
 const db = require("./db");
 
 const app = express(); // create an instance of express app and store it in the app variable
+app.use(cors());
 app.use(express.json());
 
 // get all housing entries

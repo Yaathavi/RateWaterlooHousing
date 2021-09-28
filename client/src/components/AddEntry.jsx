@@ -1,8 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { HousingContext } from "../context/HousingContext";
+import HousingFinder from "../apis/HousingFinder";
 
 const AddEntry = () => {
+  const { addHousingEntry } = useContext(HousingContext);
   const [name, setName] = useState("");
-  console.log(name);
+  const [address, setAddress] = useState("");
+  const [rent, setRent] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await HousingFinder.post("/inputHousing", {
+        name: name,
+        address: address,
+        monthly_rent_price: rent,
+      });
+      addHousingEntry(response.data.data.housing);
+      console.log(response);
+    } catch (error) {}
+  };
+
   return (
     <div className="mb-4 rounded-2xl shadow-lg p-8 max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-around bg-white flex justify-center items-center flex-col">
       <p>
@@ -33,6 +51,8 @@ const AddEntry = () => {
             Address
           </label>
           <input
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
             class="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
             id="address"
             type="text"
@@ -44,6 +64,8 @@ const AddEntry = () => {
             Monthly Rent Price
           </label>
           <input
+            value={rent}
+            onChange={(e) => setRent(e.target.value)}
             class="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
             id="rent"
             type="text"
@@ -52,7 +74,11 @@ const AddEntry = () => {
         </div>
       </form>
       <div class="text-center mt-6">
-        <button class="py-1 w-40 text-xl text-white bg-blue-900 rounded-2xl">
+        <button
+          onClick={handleSubmit}
+          type="submit"
+          class="py-1 w-40 text-xl text-white bg-blue-900 rounded-2xl"
+        >
           Add
         </button>
       </div>
